@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzanalyse - Einstellungen</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header>
+        <h1>Finanzanalyse - Einstellungen</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Datenimport</a></li>
+                <li><a href="analysis.html">Auswertungen</a></li>
+                <li><a href="settings.html" class="active">Einstellungen</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="appearance-section">
+            <h2>Erscheinungsbild</h2>
+            <div class="setting-group">
+                <div class="setting-item">
+                    <label class="toggle-switch">
+                        <span class="setting-label">Dark Mode</span>
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section id="exclude-section">
+            <h2>Transaktionen aus der Auswertung ausschließen</h2>
+            
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab-button active" data-target="exclude-expenses">Ausgaben</button>
+                    <button class="tab-button" data-target="exclude-income">Einnahmen</button>
+                </div>
+                <div class="tab-content">
+                    <div id="exclude-expenses" class="tab-pane active">
+                        <h3>Auszuschließende Ausgaben</h3>
+                        <div class="form-group">
+                            <label for="exclude-expense-search">Empfänger suchen:</label>
+                            <div class="search-container">
+                                <input type="text" id="exclude-expense-search" placeholder="Name des Empfängers">
+                                <button id="exclude-expense-add" class="button small">Hinzufügen</button>
+                            </div>
+                            <div class="help-text">Tipp: Verwende einen Teil des Namens des Empfängers.</div>
+                        </div>
+                        
+                        <div class="excluded-list-container">
+                            <h4>Ausgeschlossene Ausgaben</h4>
+                            <ul id="excluded-expenses-list" class="excluded-list">
+                                <!-- Items werden per JS eingefügt -->
+                            </ul>
+                            <div class="empty-list-message" id="no-excluded-expenses">Keine ausgeschlossenen Ausgaben vorhanden.</div>
+                        </div>
+                    </div>
+                    
+                    <div id="exclude-income" class="tab-pane">
+                        <h3>Auszuschließende Einnahmen</h3>
+                        <div class="form-group">
+                            <label for="exclude-income-search">Absender suchen:</label>
+                            <div class="search-container">
+                                <input type="text" id="exclude-income-search" placeholder="Name des Absenders">
+                                <button id="exclude-income-add" class="button small">Hinzufügen</button>
+                            </div>
+                            <div class="help-text">Tipp: Verwende einen Teil des Namens des Absenders.</div>
+                        </div>
+                        
+                        <div class="excluded-list-container">
+                            <h4>Ausgeschlossene Einnahmen</h4>
+                            <ul id="excluded-income-list" class="excluded-list">
+                                <!-- Items werden per JS eingefügt -->
+                            </ul>
+                            <div class="empty-list-message" id="no-excluded-income">Keine ausgeschlossenen Einnahmen vorhanden.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="js/database.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

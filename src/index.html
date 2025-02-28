@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzanalysator</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header>
+        <h1>Finanzanalysator</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Datenimport</a></li>
+                <li><a href="analysis.html">Auswertungen</a></li>
+                <li><a href="settings.html">Einstellungen</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="upload-section">
+            <h2>Daten hochladen</h2>
+            <input type="file" id="csvFileInput" accept=".csv">
+            <button id="processButton">Daten verarbeiten</button>
+        </section>
+        <section id="results-section">
+            <h2>Ergebnisse</h2>
+            <div id="statistics"></div>
+            <canvas id="chartCanvas"></canvas>
+            <div id="fileList"></div>
+        </section>
+    </main>
+    <script src="js/csvParser.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

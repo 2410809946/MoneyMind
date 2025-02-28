@@ -1,0 +1,115 @@
+-->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanzanalysator - Auswertungen</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+    <header>
+        <h1>Finanzanalysator - Auswertungen</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Datenimport</a></li>
+                <li><a href="analysis.html" class="active">Auswertungen</a></li>
+                <li><a href="settings.html">Einstellungen</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="filter-section">
+            <h2>Zeitraum auswählen</h2>
+            <div class="filter-controls">
+                <div class="date-range">
+                    <label for="startDate">Von:</label>
+                    <input type="date" id="startDate" name="startDate">
+                    
+                    <label for="endDate">Bis:</label>
+                    <input type="date" id="endDate" name="endDate">
+                </div>
+                
+                <button id="applyFilterBtn" class="button">Anwenden</button>
+            </div>
+        </section>
+
+        <section id="summary-section">
+            <h2>Zusammenfassung</h2>
+            <div id="summary-stats" class="stats-container">
+                <!-- Statistiken werden hier eingefügt -->
+            </div>
+        </section>
+
+        <section id="chart-section">
+            <h2>Einnahmen und Ausgaben im Zeitverlauf</h2>
+            <div class="chart-container">
+                <canvas id="incomeExpenseChart"></canvas>
+            </div>
+        </section>
+
+        <section id="pareto-section">
+            <h2>Pareto-Analysen (80/20-Regel)</h2>
+            
+            <div class="chart-tabs">
+                <button class="chart-tab active" data-target="expenses-pareto">Ausgaben</button>
+                <button class="chart-tab" data-target="income-pareto">Einnahmen</button>
+            </div>
+            
+            <div class="pareto-container">
+                <div id="expenses-pareto" class="pareto-chart active">
+                    <div class="chart-header">
+                        <h3>Ausgaben nach Empfänger</h3>
+                        <select id="expenses-limit" class="top-selector">
+                            <option value="5">Top 5</option>
+                            <option value="10" selected>Top 10</option>
+                            <option value="15">Top 15</option>
+                            <option value="all">Alle</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="expensesParetoChart"></canvas>
+                    </div>
+                </div>
+                
+                <div id="income-pareto" class="pareto-chart">
+                    <div class="chart-header">
+                        <h3>Einnahmen nach Quelle</h3>
+                        <select id="income-limit" class="top-selector">
+                            <option value="5">Top 5</option>
+                            <option value="10" selected>Top 10</option>
+                            <option value="15">Top 15</option>
+                            <option value="all">Alle</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="incomeParetoChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="transactions-section">
+            <h2>Transaktionsdetails</h2>
+            <div class="transactions-container">
+                <table id="transactionsTable" class="table">
+                    <thead>
+                        <tr>
+                            <th>Datum</th>
+                            <th>Beschreibung</th>
+                            <th>Betrag</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsBody">
+                        <!-- Transaktionen werden hier eingefügt -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/analysis.js"></script>
+</body>
+</html>

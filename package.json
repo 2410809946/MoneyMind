@@ -1,0 +1,24 @@
+{
+  "name": "finance-analyzer",
+  "version": "1.0.0",
+  "description": "A simple offline application to analyze financial data from CSV files.",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "dependencies": {
+    "chart.js": "^3.7.0"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.1"
+  },
+  "keywords": [
+    "finance",
+    "csv",
+    "analysis",
+    "charts"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}

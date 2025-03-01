@@ -1,15 +1,12 @@
 /**
- * Berechnungsfunktionen für den Finanzanalysator
- */
-
-/**
  * Berechnet grundlegende Statistiken aus Transaktionsdaten
  * @param {Array} transactions - Array mit Transaktionsdaten
  * @returns {Object} Objekt mit berechneten Statistiken
  */
 function calculateStatistics(transactions) {
-    // Prüfe, ob Transaktionen vorhanden sind
-    if (!transactions || transactions.length === 0) {
+    // Prüfe, ob Transaktionen vorhanden sind und ein Array sind
+    if (!transactions || !Array.isArray(transactions) || transactions.length === 0) {
+        console.warn("Keine gültigen Transaktionen gefunden oder kein Array");
         return {
             count: 0,
             income: 0,
@@ -30,20 +27,36 @@ function calculateStatistics(transactions) {
         categories: {}
     };
     
-    // Zeitraum ermitteln
-    let dates = transactions.map(t => new Date(t.Buchungsdatum))
-        .filter(d => !isNaN(d.getTime()));
+    // Zeitraum ermitteln - mit Fehlerbehandlung
+    let dates = [];
+    try {
+        dates = transactions
+            .filter(t => t && t.Buchungsdatum)
+            .map(t => new Date(t.Buchungsdatum))
+            .filter(d => !isNaN(d.getTime()));
+    } catch (error) {
+        console.error("Fehler bei der Datumsberechnung:", error);
+    }
     
     if (dates.length > 0) {
-        const startDate = new Date(Math.min(...dates.map(d => d.getTime())));
-        const endDate = new Date(Math.max(...dates.map(d => d.getTime())));
-        
-        stats.startDate = startDate.toLocaleDateString();
-        stats.endDate = endDate.toLocaleDateString();
+        try {
+            const startDate = new Date(Math.min(...dates.map(d => d.getTime())));
+            const endDate = new Date(Math.max(...dates.map(d => d.getTime())));
+            
+            stats.startDate = startDate.toLocaleDateString();
+            stats.endDate = endDate.toLocaleDateString();
+        } catch (error) {
+            console.error("Fehler bei der Bestimmung des Zeitraums:", error);
+            stats.startDate = '-';
+            stats.endDate = '-';
+        }
     } else {
         stats.startDate = '-';
         stats.endDate = '-';
     }
+    
+    // Rest der Funktion bleibt gleich
+    // ...
     
     // Einnahmen und Ausgaben berechnen
     transactions.forEach(transaction => {

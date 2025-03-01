@@ -1,0 +1,4 @@
+owner: '2410809946'
+repo: finance-analyzer
+provider: github
+updaterCacheDirName: moneymind-updater

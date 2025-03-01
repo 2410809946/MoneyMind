@@ -1,24 +1,40 @@
 {
-  "name": "finance-analyzer",
-  "version": "1.0.0",
-  "description": "A simple offline application to analyze financial data from CSV files.",
-  "main": "src/js/main.js",
+  "name": "moneymind",
+  "version": "0.3.0",
+  "description": "Finance analyzer application",
+  "main": "main.js",
   "scripts": {
-    "start": "live-server src"
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
-  "dependencies": {
-    "chart.js": "^3.7.0"
+  "build": {
+    "appId": "com.yourname.moneymind",
+    "productName": "MoneyMind",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!**/.vscode/*",
+      "!**/.git/*",
+      "!dist/*",
+      "!node_modules/*"
+    ],
+    "mac": {
+      "category": "public.app-category.finance",
+      "target": "dmg",
+      "icon": "src/assets/app-icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "src/assets/app-icon.ico"
+    }
   },
+  "author": "Raphi",
+  "license": "MIT",
   "devDependencies": {
-    "http-server": "^14.1.1",
-    "live-server": "^1.2.1"
-  },
-  "keywords": [
-    "finance",
-    "csv",
-    "analysis",
-    "charts"
-  ],
-  "author": "Your Name",
-  "license": "MIT"
+    "electron": "^29.4.6",
+    "electron-builder": "^24.13.3"
+  }
 }

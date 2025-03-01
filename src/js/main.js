@@ -30,48 +30,105 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Verarbeitet die ausgewählte CSV-Datei
-    async function processCSVFile() {
-        if (!csvFileInput.files.length) {
-            showNotification('Bitte wähle eine CSV-Datei aus', 'warning');
+    // Füge diese Funktion hinzu oder ersetze die vorhandene processCSVFile-Funktion
+
+async function processCSVFile(file) {
+    try {
+        console.log("Verarbeite CSV-Datei:", file.name);
+        
+        // UI-Updates
+        const processButton = document.getElementById('processButton');
+        if (processButton) processButton.disabled = true;
+        
+        const resultsSection = document.getElementById('results-section');
+        if (resultsSection) resultsSection.innerHTML = '<div class="loading">Verarbeite Daten...</div>';
+        
+        // CSV-Datei parsen
+        console.log("Starte CSV-Parsing...");
+        let transactions;
+        
+        try {
+            transactions = await parseCSV(file);
+            console.log("CSV-Parsing abgeschlossen, Ergebnis:", typeof transactions);
+            console.log("Ist Array:", Array.isArray(transactions));
+            console.log("Anzahl Transaktionen:", transactions && Array.isArray(transactions) ? transactions.length : 0);
+            
+            // WICHTIG: Stelle absolut sicher, dass wir mit einem Array arbeiten
+            if (!Array.isArray(transactions)) {
+                console.error("KRITISCH: Transaktionen sind kein Array nach dem Parsing!");
+                if (transactions && typeof transactions === 'object') {
+                    // Versuche, das Objekt in ein Array zu konvertieren
+                    transactions = Object.values(transactions);
+                    console.log("Nach Konvertierung: Ist Array?", Array.isArray(transactions));
+                }
+                
+                if (!Array.isArray(transactions)) {
+                    // Als absoluten Fallback ein leeres Array erstellen
+                    console.warn("Erstelle ein leeres Array als Fallback");
+                    transactions = [];
+                }
+            }
+            
+            if (transactions.length === 0) {
+                throw new Error("Keine Transaktionen gefunden. Bitte überprüfe das CSV-Format.");
+            }
+            
+        } catch (error) {
+            console.error("Fehler beim CSV-Parsing:", error);
+            if (resultsSection) 
+                resultsSection.innerHTML = `<div class="error">Fehler beim Parsen der Datei: ${error.message}</div>`;
+            if (processButton) processButton.disabled = false;
             return;
         }
         
-        const file = csvFileInput.files[0];
-        
+        // In IndexedDB speichern
         try {
-            // Zeige Ladeindikator
-            showNotification('Datei wird verarbeitet...', 'info');
+            console.log("Speichere Transaktionen in Datenbank...");
+            console.log("Vor dem Speichern - Transaktionstyp:", typeof transactions);
+            console.log("Vor dem Speichern - Ist Array:", Array.isArray(transactions));
             
-            // Datei parsen
-            const parsedData = await parseCSV(file);
-            
-            if (!parsedData || !parsedData.length) {
-                showNotification('Die Datei enthält keine gültigen Daten', 'error');
-                return;
+            // WICHTIG: Explizit prüfen, bevor die DB-Funktion aufgerufen wird
+            if (!Array.isArray(transactions)) {
+                throw new Error("transactions ist kein Array vor dem Speichern");
             }
             
-            // Statistiken berechnen
-            const stats = calculateStatistics(parsedData);
+            // Versuche saveTransactions (nicht saveImportedFile)
+            await db.saveTransactions(transactions, file.name);
+            console.log("Transaktionen erfolgreich gespeichert");
             
-            // In der Datenbank speichern
-            const fileId = await saveFileAndTransactions(file.name, parsedData);
-            
-            // UI aktualisieren
-            displayStatistics(stats);
-            createChart(stats);
-            await updateFileList();
-            
-            // Erfolgsbenachrichtigung
-            showNotification(`${parsedData.length} Transaktionen erfolgreich importiert`, 'success');
-            
-            // Eingabefeld zurücksetzen
-            csvFileInput.value = '';
-            
+            // Aktualisiere Dateilistenanzeige wenn vorhanden
+            if (typeof updateFileList === 'function') {
+                updateFileList();
+            }
         } catch (error) {
-            console.error('Fehler beim Verarbeiten der Datei:', error);
-            showNotification('Fehler beim Verarbeiten der Datei: ' + error.message, 'error');
+            console.error("Fehler beim Speichern:", error);
+            if (resultsSection) 
+                resultsSection.innerHTML = `<div class="error">Fehler beim Speichern: ${error.message}</div>`;
+            if (processButton) processButton.disabled = false;
+            return;
         }
+        
+        // Berechne Statistiken
+        console.log("Berechne Statistiken...");
+        const stats = calculateStatistics(transactions);
+        
+        // UI aktualisieren
+        if (typeof displayResults === 'function') {
+            displayResults(stats);
+        }
+        
+        if (processButton) processButton.disabled = false;
+        
+    } catch (error) {
+        console.error("Allgemeiner Fehler in processCSVFile:", error);
+        alert("Fehler beim Verarbeiten der Datei: " + error.message);
+        const processButton = document.getElementById('processButton');
+        if (processButton) processButton.disabled = false;
     }
+}
+
+// Für die Kompatibilität mit Electron, mach die Funktion global verfügbar
+window.processCSVFile = processCSVFile;
     
     // Speichert die Datei und Transaktionen in der Datenbank
     async function saveFileAndTransactions(fileName, transactions) {
@@ -89,6 +146,12 @@ document.addEventListener('DOMContentLoaded', function() {
             transaction.fileId = fileId;
         }
         
+
+        // In der processCSVFile Funktion, vor dem Aufruf von saveTransactions/saveImportedFile:
+        console.log("Transaktionen Typ:", typeof transactions);
+        console.log("Ist transactions ein Array?", Array.isArray(transactions));
+        console.log("Transaktionen Beispieldaten:", transactions.length > 0 ? transactions[0] : "Keine Daten");
+
         await db.saveTransactions(transactions);
         
         return fileId;
